@@ -54,7 +54,7 @@ c) correct answer (I would use a number for this)
   }
 
   Question.prototype.checkAnswer = function(response) {
-    if (response == this.answer) {
+    if (parseInt(response) == this.answer) {
       score++;
       console.log("Correct! Your score is " + score);
       console.log("******************");
