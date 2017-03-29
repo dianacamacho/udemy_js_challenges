@@ -158,6 +158,12 @@ var UIController = (function() {
 
     return (type === 'exp' ? '-' : '+') + '' + int + '.' + dec;
   }
+
+  var nodeListForEach = function(list, callback) {
+    for(var i = 0; i < list.length; i++) {
+      callback(list[i], i);
+    }
+  };
   
   // public methods to be used outside this IIFE need to be returned in object by the IIFE
 
@@ -229,13 +235,7 @@ var UIController = (function() {
     displayPercentages: function(percentages) {
       var fields = document.querySelectorAll(DOMstrings.expensesPercLabel); // returns node list 
 
-      // need to loop through nodes to update percentage label for each. create our own forEach for nodes
-
-      var nodeListForEach = function(list, callback) {
-        for(var i = 0; i < list.length; i++) {
-          callback(list[i], i);
-        }
-      };
+      // need to loop through nodes to update percentage label for each. create our own forEach for nodes and call it
 
       nodeListForEach(fields, function(current, index) {
         if (percentages[index] > 0) {
@@ -254,7 +254,19 @@ var UIController = (function() {
       year = now.getFullYear(); 
 
       document.querySelector(DOMstrings.dateLabel).textContent = month + ' ' + year;
-      // var christmas = new Date(2016, 12, 25);
+      // var christmas = new Date(2017, 12, 25);
+    },
+    changedType: function() {
+      var fields = document.querySelectorAll(
+        DOMstrings.inputType + ', ' + DOMstrings.inputDescription + ', ' + DOMstrings.inputValue
+      );
+      // returns node list, can't use regular forEach, but we wrote one so can use that
+
+      nodeListForEach(fields, function(current) {
+        current.classList.toggle('red-focus');
+      });
+
+      document.querySelector(DOMstrings.inputBtn).classList.toggle('red');
     }
   }
 })();
@@ -298,6 +310,8 @@ var controller = (function(budgetCtrl, UICtrl) {
     }; 
 
     document.querySelector(DOMstrings.container).addEventListener('click', ctrlDeleteItem);
+
+    document.querySelector(DOMstrings.inputType).addEventListener('change', UICtrl.changedType);
 
   };
 
