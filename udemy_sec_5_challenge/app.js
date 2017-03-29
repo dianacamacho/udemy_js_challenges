@@ -44,24 +44,26 @@ c) correct answer (I would use a number for this)
     this.question = question;
     this.options = options;
     this.answer = answer;
-    this.ask = function() {
-      console.log(this.question)
-      for(var i = 0; i < this.options.length; i++) {
-        console.log(i + ': ' + options[i]);
-      }
-    },
-    this.checkAnswer = function(response) {
-      if (response == this.answer) {
-        score++;
-        console.log("Correct! Your score is " + score);
-        console.log("******************");
-      } else {
-        score--;
-        console.log("Wrong! Your score is " + score);
-        console.log("******************");
-      }
-    }
   };
+
+  Question.prototype.ask = function() {
+    console.log(this.question)
+    for(var i = 0; i < this.options.length; i++) {
+      console.log(i + ': ' + this.options[i]);
+    }
+  }
+
+  Question.prototype.checkAnswer = function(response) {
+    if (response == this.answer) {
+      score++;
+      console.log("Correct! Your score is " + score);
+      console.log("******************");
+    } else {
+      score--;
+      console.log("Wrong! Your score is " + score);
+      console.log("******************");
+    }
+  }
 
   var q1 = new Question('Best show ever?', ['The West Wing', 'The Newsroom', 'Studio 60'], 0);
   var q2 = new Question('Best food ever?', ['Steak', 'Pizza', 'Fruit'], 1);
