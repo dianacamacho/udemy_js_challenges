@@ -58,6 +58,19 @@ var budgetController = (function() {
       // Return the new element
       return newItem;
     },
+    deleteItem: function(type, id) {
+      var ids, index;
+      ids = data.allItems[type].map(function(current, index, array) {
+        // map returns new array
+        return current.id;
+      })
+
+      index = ids.indexOf(id);
+
+      if (index !== -1 ) {
+        data.allItems[type].splice(index, 1);
+      }
+    },
     calculateBudget: function() {
       // Calc total income and expenses
       calculateTotal('exp');
@@ -100,6 +113,7 @@ var UIController = (function() {
     incomeLabel: '.budget__income--value',
     expensesLabel: '.budget__expenses--value',
     percentageLabel: '.budget__expenses--percentage',
+    container: '.container'
   }
   
   // public methods to be used outside this IIFE need to be returned in object by the IIFE
@@ -135,6 +149,11 @@ var UIController = (function() {
       
       // Insert the HTML into the DOM
       document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
+    },
+    deleteListItem: function(selectorID) {
+      // JS only allows you to delete child, so to delete parent need to move up then down again
+      var el = document.getElementById(selectorID);
+      el.parentNode.removeChild(el);
     },
     clearFields: function () {
       var fields, fieldsArr;
@@ -183,6 +202,26 @@ var controller = (function(budgetCtrl, UICtrl) {
         ctrlAddItem();
       }
     });
+    var ctrlDeleteItem = function(event) {
+      var itemID, splitID, type, ID;
+      itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
+      console.log(itemID);
+      if(itemID) {
+        splitID = itemID.split("-"); // inc-1 to ['inc', '1']
+        type = splitID[0];
+        ID = parseInt(splitID[1]);
+
+        // 1. Delete item from data structure
+        budgetCtrl.deleteItem(type, ID);
+        // 2. Delete item from UI
+        UICtrl.deleteListItem(itemID);
+        // 3. Update and show the new budget
+        updateBudget();
+      }
+    }; 
+
+    document.querySelector(DOMstrings.container).addEventListener('click', ctrlDeleteItem);
+
   };
 
   var updateBudget = function() {
